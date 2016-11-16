@@ -19,7 +19,7 @@ $Headers = @{
 }
 
 <# ============================ Get The Number And Type Of The Triggering Build =============================== #>
-$res = Invoke-RestMethod -Uri http://172.18.51.40/httpAuth/app/rest/builds/%teamcity.build.id% -Method GET -Headers $Headers
+$res = Invoke-RestMethod -Uri http://<teamcity_server_ip>/httpAuth/app/rest/builds/%teamcity.build.id% -Method GET -Headers $Headers
 
 $trigger_details = $res.build.triggered.details
 $trigger_build_number_prefix = "triggeredByBuild='"
@@ -29,7 +29,7 @@ $trigger_build_type_prefix = "##triggeredByBuildType='"
 $trigger_build_type = ExtractString $trigger_details $trigger_build_type_prefix "'"
 
 <# ============================ Get Triggering Build Details =============================== #>
-$url = "http://172.18.51.40/httpAuth/app/rest/builds/number:" + $trigger_build_number + ",buildType:" + $trigger_build_type
+$url = "http://<teamcity_server_ip>/httpAuth/app/rest/builds/number:" + $trigger_build_number + ",buildType:" + $trigger_build_type
 $res = Invoke-RestMethod -Uri $url -Method GET -Headers $Headers
 
 $build_type_name = $res.build.buildType.name
@@ -37,7 +37,7 @@ $build_log_url = $res.build.webUrl
 $build_agent_name = $res.build.agent.name
 
 <# ============================ Get Testing Statistics Of The Triggering Build =============================== #>
-$url = "http://172.18.51.40/httpAuth/app/rest/builds/number:" + $trigger_build_number + ",buildType:" + $trigger_build_type + "/statistics"
+$url = "http://<teamcity_server_ip>/httpAuth/app/rest/builds/number:" + $trigger_build_number + ",buildType:" + $trigger_build_type + "/statistics"
 $res = Invoke-RestMethod -Uri $url -Method GET -Headers $Headers
 
 $buildStatus = $res.properties.property | Where-Object -Property name -Eq -Value BuildTestStatus | Select-Object -Property value
